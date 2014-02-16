@@ -13,7 +13,7 @@ class StreamTest extends PHPUnit_Framework_TestCase
         $stream = new S\Stream($this->array);
 
         $this->assertTrue($stream instanceof S\Stream);
-				
+        
         $this->assertEquals($this->array, $stream->getElements());
     }
 
@@ -25,10 +25,10 @@ class StreamTest extends PHPUnit_Framework_TestCase
             return $item * 2;
         };
 
-				$stream = $stream->map($callback);
+        $stream = $stream->map($callback);
         $this->assertEquals(array(2,4,6,8), $stream->getElements());
 
-				$stream = $stream->map($callback)->map($callback);
+        $stream = $stream->map($callback)->map($callback);
         $this->assertEquals(array(8, 16, 24, 32), $stream->getElements());
     }
 
@@ -55,16 +55,16 @@ class StreamTest extends PHPUnit_Framework_TestCase
 
         $stream = $stream->filter($predicateEven)->filter($predicateEqualsFour);
         $this->assertEquals(array(4), $stream->getElements());
-		}
+    }
 
-		public function testArrayAccess()
-		{
-			$stream = new S\Stream($this->array);
+    public function testArrayAccess()
+    {
+      $stream = new S\Stream($this->array);
 
-			$position = 0;
-			foreach($stream as $key=>$value) {
-				$this->assertEquals($position, $key);
-				$this->assertEquals(++$position, $value);
-			}
-		}
+      $position = 0;
+      foreach($stream as $key=>$value) {
+        $this->assertEquals($position, $key);
+        $this->assertEquals(++$position, $value);
+      }
+    }
 }
