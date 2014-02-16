@@ -132,7 +132,7 @@ class Stream implements \Iterator
      */
     public function getElements()
     {
-        return $this->elements;
+      return $this->elements;
     }
 
 }
