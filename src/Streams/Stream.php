@@ -11,14 +11,26 @@ namespace Streams;
  * @author Pepe García <jl.garhdez@gmail.com>
  * @license MIT
  */
-class Stream implements \Iterator
+
+
+class ArrayBehavior implements \Iterator, \ArrayAccess, \Countable
 {
-    /**
+  /**
      * elements the elements over which the stream will operate
      *
      * @var array
      */
     private $elements;
+
+    /**
+     * getElements
+     *
+     * @return array
+     */
+    public function getElements()
+    {
+      return $this->elements;
+    }
 
     /**
      * __construct
@@ -31,6 +43,11 @@ class Stream implements \Iterator
     public function __construct( array $elements )
     {
         $this->elements = $elements;
+    }
+
+    public function count()
+    {
+      return count($this->elements);
     }
 
     /**
@@ -84,6 +101,55 @@ class Stream implements \Iterator
     }
 
     /**
+     * offsetSet ArrayAccess function
+     *
+     * @param mixed $offest
+     * @param mixed $value
+     * @return mixed
+     */ 
+    public function offsetSet($offset, $value) {
+        if (is_null($offset)) {
+            $this->elements[] = $value;
+        } else {
+            $this->elements[$offset] = $value;
+        }
+    }
+
+    /**
+     * offsetSetExists ArrayAccess function
+     *
+     * @param mixed $offset
+     * @return Boolean
+     */ 
+    public function offsetExists($offset) {
+        return isset($this->elements[$offset]);
+    }
+
+    /**
+     * offsetUnset ArrayAccess function
+     *
+     * @param mixed $offset
+     * @return viod
+     */ 
+    public function offsetUnset($offset) {
+        unset($this->elements[$offset]);
+    }
+
+    /**
+     * offsetGet ArrayAccess function
+     *
+     * @param mixed $offset
+     * @return mixed
+     */ 
+    public function offsetGet($offset) {
+        return isset($this->elements[$offset]) ? $this->elements[$offset] : null;
+    }
+}
+
+
+class Stream extends ArrayBehavior
+{
+    /**
      * map function
      *
      * @param callable $callback
@@ -92,7 +158,7 @@ class Stream implements \Iterator
     public function map( callable $callback )
     {
       return new self(
-        array_map($callback, $this->elements)
+        array_map($callback, $this->getElements())
       );
     }
 
@@ -108,7 +174,7 @@ class Stream implements \Iterator
     public function forEachElement( callable $callback )
     {
       return new self(
-        array_map($callback, $this->elements)
+        array_map($callback, $this->getElements())
       );
     }
 
@@ -121,18 +187,9 @@ class Stream implements \Iterator
     public function filter( callable $callback )
     {
       return new self(
-        array_values(array_filter($this->elements, $callback))
+        array_values(array_filter($this->getElements(), $callback))
       );
     }
 
-    /**
-     * getElements
-     *
-     * @return array
-     */
-    public function getElements()
-    {
-      return $this->elements;
-    }
-
 }
+

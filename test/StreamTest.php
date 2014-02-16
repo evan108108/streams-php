@@ -13,7 +13,7 @@ class StreamTest extends PHPUnit_Framework_TestCase
         $stream = new S\Stream($this->array);
 
         $this->assertTrue($stream instanceof S\Stream);
-        
+
         $this->assertEquals($this->array, $stream->getElements());
     }
 
@@ -57,7 +57,7 @@ class StreamTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(array(4), $stream->getElements());
     }
 
-    public function testArrayAccess()
+    public function testIteratorableBehavior()
     {
       $stream = new S\Stream($this->array);
 
@@ -67,4 +67,21 @@ class StreamTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(++$position, $value);
       }
     }
+
+    public function testCountableBehavior()
+    {
+      $stream = new S\Stream($this->array);
+
+      $this->assertEquals(4, count($stream));
+    }
+
+    public function testArrayAccessBehavior()
+    {
+      $stream = new S\Stream($this->array);
+
+      for($cnt=0; $cnt<count($stream); $cnt++) {
+        $this->assertEquals($cnt+1, $stream[$cnt]);
+      }
+    }
+
 }
