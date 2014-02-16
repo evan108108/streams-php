@@ -11,7 +11,7 @@ namespace Streams;
  * @author Pepe García <jl.garhdez@gmail.com>
  * @license MIT
  */
-class Stream
+class Stream implements \Iterator
 {
     /**
      * elements the elements over which the stream will operate
@@ -31,18 +31,47 @@ class Stream
     public function __construct( array $elements )
     {
         $this->elements = $elements;
+		}
+
+		/**
+		 * 
+		 */ 
+		public function rewind()
+    {
+        reset($this->elements);
+    }
+  
+    public function current()
+    {
+        return current($this->elements);
+    }
+  
+    public function key() 
+    {
+        return key($this->elements);
+    }
+  
+    public function next() 
+    {
+        return next($this->elements);
+    }
+  
+    public function valid()
+    {
+        return (key($this->elements) !== NULL && key($this->elements) !== FALSE);
     }
 
     /**
-     * map funcnti
+     * map function
      *
      * @param callable $callback
      * @return void
      */
     public function map( callable $callback )
-    {
-        $this->elements = array_map($callback, $this->elements);
-        return $this;
+		{
+			return new self(
+				array_map($callback, $this->elements)
+			);
     }
 
     /**
@@ -55,9 +84,10 @@ class Stream
      * @return void
      */
     public function forEachElement( callable $callback )
-    {
-        array_map($callback, $this->elements);
-        return $this;
+		{
+			return new self(
+				array_map($callback, $this->elements)
+			);
     }
 
     /**
@@ -67,9 +97,10 @@ class Stream
      * @return void
      */
     public function filter( callable $callback )
-    {
-        $this->elements = array_values(array_filter($this->elements, $callback));
-        return $this;
+		{
+			return new self(
+				array_values(array_filter($this->elements, $callback))
+			);
     }
 
     /**
@@ -80,5 +111,6 @@ class Stream
     public function getElements()
     {
         return $this->elements;
-    }
+		}
+
 }
